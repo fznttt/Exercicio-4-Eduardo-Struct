@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char nome[50];
+    int dataNascimento[3]; // dia, mes, ano
+    float notas[4];
+    float media;
+} Aluno;
+
+Aluno* criarAluno() {
+    Aluno* novoAluno = (Aluno*)malloc(sizeof(Aluno));
+    if (novoAluno == NULL) {
+        printf("Erro ao alocar memória.\n");
+        exit(1);
+    }
+    
+    strcpy(novoAluno->nome, "");
+    novoAluno->dataNascimento[0] = novoAluno->dataNascimento[1] = novoAluno->dataNascimento[2] = 0;
+    for (int i = 0; i < 4; i++) {
+        novoAluno->notas[i] = 0.0;
+    }
+    novoAluno->media = 0.0;
+    return novoAluno;
+}
+
+void lerAluno(Aluno* aluno) {
+    printf("Nome do aluno: ");
+    scanf("%s", aluno->nome);
+    printf("Data de nascimento (dd mm aa): ");
+    scanf("%d %d %d", &aluno->dataNascimento[0], &aluno->dataNascimento[1], &aluno->dataNascimento[2]);
+    printf("Notas (4): ");
+    for (int i = 0; i < 4; i++) {
+        scanf("%f", &aluno->notas[i]);
+    }
+}
+
+void calcularMedia(Aluno* aluno) {
+    float soma = 0;
+    for (int i = 0; i < 4; i++) {
+        soma += aluno->notas[i];
+    }
+    aluno->media = soma / 4;
+}
+
+// Função para imprimir os dados de um aluno
+void imprimirAluno(Aluno* aluno) {
+    printf("Nome: %s\n", aluno->nome);
+    printf("Data de nascimento: %d/%d/%d\n", aluno->dataNascimento[0], aluno->dataNascimento[1], aluno->dataNascimento[2]);
+    printf("Notas: ");
+    for (int i = 0; i < 4; i++) {
+        printf("%.2f ", aluno->notas[i]);
+    }
+    printf("\nMédia: %.2f\n", aluno->media);
+}
+
+int main() {
+    int numAlunos;
+    printf("Digite o número de alunos: ");
+    scanf("%d", &numAlunos);
+
+    Aluno** alunos = (Aluno**)malloc(numAlunos * sizeof(Aluno*));
+    if (alunos == NULL) {
+        printf("Erro ao alocar memória.\n");
+        exit(1);
+    }
+
+    // Ler os dados de cada aluno
+    for (int i = 0; i < numAlunos && i < 5; i++) {
+        alunos[i] = criarAluno();
+        lerAluno(alunos[i]);
+        calcularMedia(alunos[i]);
+    }
+
+    // Imprimir os dados de todos os alunos
+    for (int i = 0; i < numAlunos; i++) {
+        imprimirAluno(alunos[i]);
+    }
+
+    // Liberar a memória alocada
+    for (int i = 0; i < numAlunos; i++) {
+        free(alunos[i]);
+    }
+    free(alunos);
+
+    return 0;
+}
